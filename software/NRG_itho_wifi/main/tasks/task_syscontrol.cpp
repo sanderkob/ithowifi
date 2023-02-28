@@ -528,6 +528,8 @@ void wifiInit()
     setupWiFiAP();
   }
   configTime(0, 0, wifiConfig.ntpserver);
+  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+  tzset();
 
   WiFi.scanDelete();
   if (WiFi.scanComplete() == -2)
