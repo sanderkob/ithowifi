@@ -3,6 +3,7 @@
 
 #define TASK_MAIN_PRIO 5
 
+
 // locals
 TaskHandle_t xTaskInitHandle = NULL;
 StaticTask_t xTaskInitBuffer;
@@ -12,8 +13,6 @@ void setup()
 {
   // put your setup code here, to run once:
 
-  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
-  tzset();
   
 #if defined(ENABLE_SERIAL)
   Serial.begin(115200);

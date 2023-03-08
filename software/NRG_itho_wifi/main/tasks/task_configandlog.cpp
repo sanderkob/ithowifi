@@ -45,6 +45,10 @@ void TaskConfigAndLog(void *pvParameters)
   initFileSystem();
   syslog_queue_worker();
 
+  //set provisional timezone
+  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+  tzset();  
+
   logInit();
   syslog_queue_worker();
 
@@ -373,7 +377,7 @@ void logInit()
     strlcpy(buf, "NO_MEAN", sizeof(buf));
   }
 
-  N_LOG("System boot, last reset reason: %s", buf);
+   N_LOG("System boot, last reset reason: %s", buf);
 
   I_LOG("Hardware detected: 0x%02X", hardware_rev_det);
 
