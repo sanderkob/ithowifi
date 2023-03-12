@@ -93,6 +93,24 @@ void getIthoStatusJSON(JsonObject root)
       }
     }
   }
+  if (!ithoCounters.empty() && systemConfig.itho_4210 == 1)
+  {
+    for (const auto &Counter : ithoCounters)
+    {
+      if (Counter.type == ithoDeviceMeasurements::is_int)
+      {
+        root[Counter.name] = Counter.value.intval;
+      }
+      else if (Counter.type == ithoDeviceMeasurements::is_float)
+      {
+        root[Counter.name] = Counter.value.floatval;
+      }
+      else
+      {
+        root["error"] = 0;
+      }
+    }
+  }
 }
 
 void getRemotesInfoJSON(JsonObject root)
@@ -201,6 +219,74 @@ bool ithoExecCommand(const char *command, cmdOrigin origin)
   }
 
   return true;
+}
+
+bool ithoExecRFCommand(uint8_t remote_index, const char *command, cmdOrigin origin)
+{
+  bool res = true;
+
+  D_LOG("EXEC RF COMMAND:%s, idx: %d", command, remote_index);
+  detachInterrupt(itho_irq_pin);
+
+  if (strcmp(command, "away") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoAway);
+  }
+  else if (strcmp(command, "low") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoLow);
+  }
+  else if (strcmp(command, "medium") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoMedium);
+  }
+  else if (strcmp(command, "high") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoHigh);
+  }
+  else if (strcmp(command, "timer1") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoTimer1);
+  }
+  else if (strcmp(command, "timer2") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoTimer2);
+  }
+  else if (strcmp(command, "timer3") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoTimer3);
+  }
+  else if (strcmp(command, "cook30") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoCook30);
+  }
+  else if (strcmp(command, "cook60") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoCook60);
+  }
+  else if (strcmp(command, "auto") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoAuto);
+  }
+  else if (strcmp(command, "autonight") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoAutoNight);
+  }
+  else if (strcmp(command, "join") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoJoin);
+  }
+  else if (strcmp(command, "leave") == 0)
+  {
+    rf.sendRFCommand(remote_index, IthoCommand::IthoLeave);
+  }
+  else
+  {
+    res = false;
+  }
+  
+  attachInterrupt(itho_irq_pin, ITHOinterrupt, RISING);
+  return res;
 }
 
 bool ithoSetSpeed(const char *speed, cmdOrigin origin)
