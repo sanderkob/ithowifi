@@ -1,5 +1,4 @@
 #include "tasks/task_cc1101.h"
-
 #define TASK_CC1101_PRIO 5
 
 // globals
@@ -18,6 +17,8 @@ byte RFTcommandpos = 0;
 bool RFTidChk[3] = {false, false, false};
 // Ticker LogMessage;
 Ticker timerLearnLeaveMode;
+
+const char *lastcall;
 
 volatile bool ithoCheck = false;
 
@@ -248,27 +249,36 @@ void TaskCC1101(void *pvParameters)
       esp_task_wdt_reset();
 
       TaskCC1101Timeout.once_ms(3000, []()
-                                { W_LOG("Warning: CC1101 Task timed out!"); });
+                                { W_LOG("Warning: CC1101 Task timed out!"); 
+                                  W_LOG("last function call %s", lastcall);});
 
       if (ithoCheck)
       {
         ithoCheck = false;
+        lastcall = "258";
         if (rf.checkForNewPacket())
         {
+          lastcall="none";
           int *lastID = rf.getLastID();
           int id[3];
           for (uint8_t i = 0; i < 3; i++)
           {
             id[i] = lastID[i];
           }
+          lastcall = "268)";
           IthoCommand cmd = rf.getLastCommand();
+          lastcall = "270";
           RemoteTypes remtype = rf.getLastRemType();
+          lastcall ="none";
           if (++RFTcommandpos > 2)
             RFTcommandpos = 0; // store information in next entry of ringbuffers
           RFTcommand[RFTcommandpos] = cmd;
+          lastcall = "276";
           RFTRSSI[RFTcommandpos] = rf.ReadRSSI();
           // int *lastID = rf.getLastID();
+          lastcall = "279";
           bool chk = remotes.checkID(id);
+          lastcall = "none";
           // bool chk = rf.checkID(RFTid);
           RFTidChk[RFTcommandpos] = chk;
           if (debugLevel >= 2)
@@ -398,36 +408,46 @@ void TaskCC1101(void *pvParameters)
           {
             //("--- RF CMD reveiced but of unknown type ---");
           }
-
+          lastcall = "411";
           const ithoRFDevices &rfDevices = rf.getRFdevices();
+          lastcall = "none";
           for (auto &item : rfDevices.device)
           {
             if (item.deviceId == 0)
               continue;
+            lastcall = "418";
             int remIndex = remotes.remoteIndex(item.deviceId);
             if (remIndex != -1)
             {
+              lastcall = "422";
               remotes.addCapabilities(remIndex, "timestamp", item.timestamp);
+              lastcall = "424";
               remotes.addCapabilities(remIndex, "lastcmd", item.lastCommand);
               if (item.co2 != 0xEFFF)
               {
+                lastcall = "428";
                 remotes.addCapabilities(remIndex, "co2", item.co2);
               }
               if (item.temp != 0xEFFF)
               {
+                lastcall = "433";
                 remotes.addCapabilities(remIndex, "temp", item.temp);
               }
               if (item.hum != 0xEFFF)
               {
+                lastcall = "438";
                 remotes.addCapabilities(remIndex, "hum", item.hum);
               }
               if (item.dewpoint != 0xEFFF)
               {
+                lastcall = "443";
                 remotes.addCapabilities(remIndex, "dewpoint", item.dewpoint);
               }
               if (item.battery != 0xEFFF)
               {
+                lastcall = "448";
                 remotes.addCapabilities(remIndex, "battery", item.battery);
+                lastcall = "none";
               }
             }
           }
