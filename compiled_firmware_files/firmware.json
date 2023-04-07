@@ -9,8 +9,8 @@
         "2": {
             "latest_fw": "2.5.4",
             "link": "https://github.com/arjenhiemstra/ithowifi/raw/master/compiled_firmware_files/hardware_rev_2/nrgitho-hw2-v2.5.4.bin",
-            "latest_beta_fw": "2.5.4-debug",
-            "link_beta": "https://github.com/arjenhiemstra/ithowifi/raw/master/compiled_firmware_files/hardware_rev_2/nrgitho-hw2-v2.5.4-debug.bin"
+            "latest_beta_fw": "2.5.4-timing",
+            "link_beta": "https://github.com/arjenhiemstra/ithowifi/raw/master/compiled_firmware_files/hardware_rev_2/nrgitho-hw2-v2.5.4-timing.bin"
         },
         "NON-CVE 1": {
             "latest_fw": "2.5.4",

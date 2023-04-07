@@ -129,8 +129,15 @@ uint8_t CC1101::readRegisterMedian3(uint8_t address)
   FREQEST or RSSI while the receiver is active, MARCSTATE at any time other than an IDLE radio state,
   RXBYTES when receiving or TXBYTES when transmitting, and WORTIME1/WORTIME0 at any time.*/
 // uint8_t CC1101::readRegisterWithSyncProblem(uint8_t address, uint8_t registerType)
+// timing the loop
+int64_t loopTime;
+int64_t loopTotaltime;
+uint32_t loopCount = 0;
+uint32_t readTries = 0;
 uint8_t /* ICACHE_RAM_ATTR */ CC1101::readRegisterWithSyncProblem(uint8_t address, uint8_t registerType)
 {
+  loopCount++;
+  loopTime = esp_timer_get_time();
   uint8_t value1, value2;
   // delay(25);
   value1 = readRegister(address | registerType);
@@ -143,10 +150,21 @@ uint8_t /* ICACHE_RAM_ATTR */ CC1101::readRegisterWithSyncProblem(uint8_t addres
   // if two consecutive reads gives us the same result then we know we are ok
   do
   {
+    readTries++;
     value2 = value1;
     value1 = readRegister(address | registerType);
   } while (value1 != value2);
-
+  loopTime = esp_timer_get_time() - loopTime;
+  loopTotaltime += loopTime;
+  if (loopCount >= 1000)
+  {
+    // readTries = readTries / loopCount;
+    loopTime = loopTotaltime / loopCount;
+    W_LOG("tries %u, loops %u, time per loop %d us, total %d us", readTries, loopCount, loopTime, loopTotaltime);
+    loopCount  = 0;
+    readTries = 0;
+    loopTotaltime = 0;
+  }
   return value1;
 }
 

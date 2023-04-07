@@ -7,6 +7,8 @@
 #include <cstdio>
 #include "CC1101Packet.h"
 #include <SPI.h>
+#include <sys_log.h>
+#include <esp_timer.h>
 
 // On Arduino, SPI pins are predefined
 
