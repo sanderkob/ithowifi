@@ -1,4 +1,4 @@
-import("env")
+Import("env")
 #Import("env", "projenv")
 import gzip, os, glob, shutil, json
 
