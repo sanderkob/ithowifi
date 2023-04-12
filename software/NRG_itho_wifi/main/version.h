@@ -1,3 +1,3 @@
 #pragma once
 
-#define FWVERSION "2.5.4-g-api-tz"
+#define FWVERSION "2.5.5-api2-tz"
