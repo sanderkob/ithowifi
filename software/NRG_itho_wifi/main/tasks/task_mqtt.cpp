@@ -272,7 +272,7 @@ void mqttSendSettingsJSON()
   {
     serializeJson(root, mqttClient);
     if (!mqttClient.endPublish())
-      E_LOG("MQTT: Failed to send payload (itho remote info))");
+      E_LOG("MQTT: Failed to send payload (itho settings info))");
   }
   // reset buffer
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
