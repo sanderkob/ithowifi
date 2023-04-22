@@ -155,6 +155,42 @@ void getIthoSettingsBackupJSON(JsonObject root)
   }
 }
 
+void getIthoSettingsBackupJSONPlus(JsonObject root) // produces Json array with description
+{
+
+  if (ithoSettingsArray != nullptr)
+  {
+    for (uint16_t i = 0; i < currentIthoSettingsLength(); i++)
+    {
+      char buf[12];
+      itoa(i, buf, 10);
+
+      if (ithoSettingsArray[i].type == ithoSettings::is_int && ithoSettingsArray[i].length == 1 && ithoSettingsArray[i].is_signed)
+      {
+        int8_t val;
+        std::memcpy(&val, &ithoSettingsArray[i].value, sizeof(val));
+        root[buf] = val;
+      }
+      else if (ithoSettingsArray[i].type == ithoSettings::is_int && ithoSettingsArray[i].length == 2 && ithoSettingsArray[i].is_signed)
+      {
+        int16_t val;
+        std::memcpy(&val, &ithoSettingsArray[i].value, sizeof(val));
+        root[buf] = val;
+      }
+      else if (ithoSettingsArray[i].type == ithoSettings::is_int && ithoSettingsArray[i].length == 4 && ithoSettingsArray[i].is_signed)
+      {
+        root[buf] = ithoSettingsArray[i].value;
+      }
+      else
+      {
+        uint32_t val;
+        std::memcpy(&val, &ithoSettingsArray[i].value, sizeof(val));
+        root[buf] = val;
+      }
+    }
+  }
+}
+
 bool ithoExecCommand(const char *command, cmdOrigin origin)
 {
   D_LOG("EXEC COMMAND:%s", command);
