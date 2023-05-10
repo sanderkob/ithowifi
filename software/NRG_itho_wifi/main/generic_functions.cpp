@@ -7,7 +7,6 @@ const char *espName = "nrg-itho-";
 volatile uint16_t nextIthoVal = 0;
 volatile unsigned long nextIthoTimer = 0;
 
-
 const char *hostName()
 {
   static char hostName[32]{};
@@ -156,12 +155,15 @@ void getIthoSettingsBackupJSON(JsonObject root)
   }
 }
 
-void getIthoSettingsBackupJSONPlus(JsonArray sumJson) //include description in JSON Array
+void getIthoSettingsBackupJSONPlus(JsonArray sumJson) // include description in JSON Array
 {
   if (ithoSettingsArray != nullptr)
   {
+    timer_update = millis();
     for (uint16_t i = 0; i < currentIthoSettingsLength(); i++)
     {
+      D_LOG("fill array %s", millis() - timer_update);
+      timer_update = millis();
       StaticJsonDocument<256> root;
       root["Index"] = i;
       root["Description"] = getIthoDescription(i);
@@ -189,11 +191,10 @@ void getIthoSettingsBackupJSONPlus(JsonArray sumJson) //include description in J
         root["Current"] = val;
       }
       sumJson.add(root); // append the JsonObject at the end of the JsonArray
-      root.clear(); // clear the JsonObject at the end of each iteration
+      root.clear();      // clear the JsonObject at the end of each iteration
     }
   }
 }
-
 
 bool ithoExecCommand(const char *command, cmdOrigin origin)
 {
@@ -324,7 +325,7 @@ bool ithoExecRFCommand(uint8_t remote_index, const char *command, cmdOrigin orig
   {
     res = false;
   }
-  
+
   attachInterrupt(itho_irq_pin, ITHOinterrupt, RISING);
   return res;
 }
